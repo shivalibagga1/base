@@ -1,0 +1,36 @@
+{% extends "page" %}
+{% block main-container-class %}container{% endblock main-container-class %}
+
+{% block title-tag-content %}{% firstof pageContext.metaTitle labels.signUp %} - {% parent %}{% endblock title-tag-content %}
+
+{% block body-tag-classes %} mz-catalog-request {% endblock body-tag-classes %}
+
+
+{% block body-content %}
+    {% block breadcrumbs %}{% endblock breadcrumbs %}
+
+    {% require_script "pages/catalogRequest" %}
+    <div class="mz-l-container">
+        <h1 class="mz-pagetitle">{{ labels.requestCatalog }}</h1>
+        {% dropzone "email-signup-top" scope="template" %}
+        <div class="register-success-panel text-center" style="display:none">
+            <div class="">{{labels.requestCatalogSuccess|safe}}</div>
+            <div class="">
+                <a href="/" class="btn button-primary">
+                    <div class="cart-btn-continue"> {{ labels.continueShopping }}</div>
+                </a>
+            </div>
+        </div>
+        <div id="catalog-address-form-messages"></div>
+        <div class="row" id="form-viewport">
+            <div class="col-xs-12 col-sm-5">
+                <div id="catalog-address-form-container" class="mz-l-formfieldgroup">
+                    
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-5">
+                {% dropzone "catalog-right" scope="template" %}
+            </div>
+        </div>
+    </div>
+{% endblock body-content %}

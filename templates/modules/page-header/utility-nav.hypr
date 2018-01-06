@@ -1,0 +1,194 @@
+﻿<nav class="mz-utilitynav">
+    <ul class="mz-utilitynav-list">
+        <!--
+        <li class="mz-utilitynav-item">
+            <a href="{{siteContext.siteSubdirectory}}/user/order-status?returnUrl={{siteContext.siteSubdirectory}}/myaccount" data-mz-action="anon-order" class="mz-utilitynav-link">{{ labels.orderStatus }}</a>
+        </li>
+        -->
+        <li class="mz-utilitynav-item navbar-collapse-control">
+            <a data-target="#ml-nav"  data-toggle="collapse" class="mz-utilitynav-link">
+                {% dropzone "products-collapsible-label" scope="site" %}
+                <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+            </a>
+        </li>         
+        {% comment %}
+        The below require_script tag does not render anything in the place it's actually inserted; it instead adds the script to a list of scripts  which are then included at the end of the page by RequireJS.
+        Use require_script to load AMD modules that are wrapped in define() or require() function calls.
+        {% endcomment %}
+        {% require_script "modules/login-links" %}
+        {% if not user.isAnonymous %}
+        <li class="mz-utilitynav-item">
+            <div id="mz-logged-in-notice">
+            <a href="/myaccount" tabindex="0" data-mz-action="my-account" id="my-account" role="button" data-trigger="click" data-toggle="popover" data-content="" class="mz-utilitynav-link">{{user.firstName|default(user.email)}}
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </a>
+
+            <!-- ! (<a href="/logout" data-mz-action="logout" class="mz-utilitynav-link">{{ labels.logOut }}</a>)--> 
+                <div id="my-account-content" style="display:none;">
+                    <div class="my-account-details">
+                        <a href="/myaccount#settings">
+                            <h4>{{ labels.accountSettings }}</h4>
+                            <p>{{ labels.accountSettingsInfo }}</p>
+                        </a> 
+                    </div>
+                    {% if siteContext.generalSettings.isWishlistCreationEnabled %}
+                        <div class="my-account-details">
+                            <a href="/myaccount#wishlist">
+                                <h4>{{ labels.wishLists }}</h4>
+                                <p>{{ labels.wishListsInfo }}</p>
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="my-account-details">
+                        <a href="/myaccount#orderhistory">
+                            <h4>{{ labels.orderHistory }}</h4>
+                            <p>{{ labels.orderHistoryInfo }}</p>
+                        </a>
+                    </div>
+                    <div class="my-account-details">
+                        <a href="/myaccount#returnhistory">
+                            <h4>{{ labels.returns }}</h4>
+                            <p>{{ themeSettings.returnsInfo }} </p>
+                        </a>
+                    </div>
+                    <div class="my-account-details">
+                        <a href="/myaccount#paymentmethods">
+                            <h4>{{ labels.paymentMethods }}</h4>
+                            <p>{{ themeSettings.paymentsMethodInfo }} </p>
+                        </a>
+                    </div>
+                    <div class="my-account-details">
+                        <a href="/myaccount#addressbook">
+                            <h4>{{ labels.addressBook }}</h4>
+                            <p>{{ labels.addressBookInfo }}</p>
+                        </a>
+                    </div>
+                    <div class="my-account-details">
+                        <a href="/myaccount#{{ labels.digitalCreditsAnchor }}">
+                            <h4>{{ labels.digitalCredit }}</h4>
+                            <p>{{ themeSettings.giftCardsInfo }} </p>
+                        </a>
+                    </div>
+                    <div class="my-account-details">
+                        <a href="/logout">
+                            <h4>{{ labels.logOut }}</h4>
+                            <p>{{ labels.logOutInfo }}</p>
+                        </a>
+                    </div>
+                </div>  
+
+            </div> 
+            
+        </li>
+        <li class="mz-utilitynav-item">
+            <a href="/logout" class="mz-utilitynav-link">{{ labels.logOut }}</a>
+
+        </li>
+        {%else%}
+       
+        <li class="mz-utilitynav-item">
+             <!--<a href="/user/login" data-mz-action="login" data-placement="bottom" class="mz-utilitynav-link">{{ labels.logIn }}</a>-->
+            
+            <!-- Button trigger modal -->
+            <a type="button" class="login-link-text" data-toggle="modal" data-mz-action="lite-registration" >
+              login
+            </a>
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        </li>
+        {% endif %}                
+        <li class="mz-utilitynav-item">
+            <a href="/store-locator" data-mz-action="stores" data-placement="bottom" class="mz-utilitynav-link">{{ labels.localStores }}</a>
+            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>            
+        </li>
+        <li class="mz-utilitynav-item site-msg">
+            {% dropzone "site-message" scope="site" %}
+        </li>
+    </ul>
+
+        <!-- Modal -->
+        <div class="modal fade" id="liteRegistrationModal" >
+                <div class="modal-dialog login-modal" role="document">
+                    <div class="modal-content">                  
+                        <div class="modal-body">
+                            <div>
+                                <ul class="nav nav-tabs responsive" id="myTab">
+                                    <li class=" first-tab active"><div class="arrow"></div><a class="btn login-btn login-tab-btn" data-toggle="tab" href="#login">Login</a></li>
+                                    <li class="second-tab"><div class="arrow"></div><a class="btn login-btn" data-toggle="tab" href="#newshopper">New Shopper</a></li>
+                                    <li class="second-tab third-tab"><a class="btn login-btn" href="/cart/checkout">Checkout as guest</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="login">
+                                        <form name="login" onsubmit="return false">
+                                        <p class="login-text">Login with an email address and password.</p>
+                                        <div class="input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-envelope" aria-hidden="true" id="email"></span>
+                                            <input type="email" class="form-control" data-mz-login-email placeholder="{{ labels.emailAddress }}" aria-describedby="basic-addon1" maxlength="{{themeSettings.emailLength}}">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-lock" id="password"></span>
+                                            <input type="password" class="form-control"  data-mz-login-password  placeholder="{{ labels.password }}" aria-describedby="basic-addon1" maxlength="{{themeSettings.passwordMaxLength}}">
+                                        </div>
+                                        <div class="input-group">
+                                            <label data-mz-role="popover-message" class="popover-message"></label>
+                                        </div>
+                                        <div class="link-button"><a href="/user/forgotpassword">{{ labels.liteRegForgotPasswordLabel }}</a></div>    
+                                        <div class="login-btn-row">
+                                            <div class="col-xs-2 left-column">
+                                                <div class="link-button"><a href="#" data-dismiss="modal">{{ labels.cancel }}</a></div>
+                                            </div>
+                                            <div class="col-xs-10 right-column">                                    
+                                                <button class="btn login-btn submit-btn" type="submit" data-mz-action="doLogin">{{ labels.login }}</button> 
+                                                <input type="hidden" class="hidden-return" name="returnUrl" id="returnUrl" value="" />  
+                                                <script>document.getElementById('returnUrl').value = window.location.href;</script>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 bottom-text"><p class="login-text"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{ labels.secureConnectionMessage }}</p></div>
+                                        </form>
+                                    </div>
+                                    <!------- Signup start-------->    
+                                    <div class="tab-pane " id="newshopper">
+                                        <p class="login-text">Register with an email address and password.</p>
+                                        <div class="input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-envelope" aria-hidden="true"></span>                                 
+                                            <input type="email" class="form-control" data-mz-signup-emailaddress placeholder="{{ labels.emailAddress }}" aria-describedby="basic-addon1" maxlength="{{themeSettings.emailLength}}">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-lock"></span>
+                                            <input type="password" class="form-control" data-mz-signup-password placeholder="{{ labels.password }}" aria-describedby="basic-addon1" maxlength="{{themeSettings.passwordMaxLength}}">
+                                        </div> 
+                                        <div class="input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-lock"></span>
+                                            <input type="password" class="form-control" data-mz-signup-confirmpassword placeholder="{{ labels.reEnterPassword }}" aria-describedby="basic-addon1" maxlength="{{themeSettings.passwordMaxLength}}">
+                                        </div>                                    
+                                        <div class = "input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-question-sign" id="list" aria-hidden="true"></span>                              
+                                            <select id="recoveryQuestionList" data-mz-signup-recoveryquestion>
+                                                <option value="0">{{ labels.recoveryQuestion }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon glyphicon glyphicon-comment" id="" aria-hidden="true"></span>
+                                            <input type="text" class="form-control" id="recoveryAnswer" maxlength="100" data-mz-signup-recoveryanswer placeholder="{{ labels.recoveryAnswer }}" aria-describedby="basic-addon1"> 
+                                        </div>                                    
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" data-mz-signup-emailupdates> {{ labels.signupEmailupdates }}</label>
+                                        </div> 
+                                        <div class="input-group">
+                                            <label data-mz-role="popover-message" class="popover-message"></label>
+                                        </div>                                   
+                                        <div class="login-btn-row">
+                                            <div class="col-xs-2 left-column">
+                                                <div class="link-button"><a href="#" data-dismiss="modal">{{ labels.cancel }}</a></div>
+                                            </div>
+                                            <div class="col-xs-10 right-column">                                    
+                                                <button class="btn login-btn" type="submit" data-mz-action="doSignup">{{ labels.register }}</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 bottom-text"><p class="login-text"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{ labels.secureConnectionMessage }}</p></div>
+                                    </div>                          
+                                </div>
+                            </div>                  
+                        </div>
+                    </div>
+            </div> 
+</nav>

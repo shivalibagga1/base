@@ -1,0 +1,35 @@
+{% extends "modules/common/address-form" %}
+{% block address-form %}
+    {% set addresscontext="" %}
+    {% set catalogRequest="true" %}    
+
+	{% parent %}
+    <div class="mz-l-formfieldgroup-row ">
+        <div class="mz-l-formfieldgroup-cell mz-hide-column-catalog">
+            <label for="email">{{ labels.emailAddress }}<span class="is-required"> *</span></label>
+        </div>
+        <div class="mz-l-formfieldgroup-cell">
+            <input type="email" class="input" name="email" data-mz-value="email" value="{{ model.email }}" maxlength="{{themeSettings.emailLength}}" placeholder="{{ labels.emailLogin}}" >
+            <span class="mz-validationmessage" data-mz-validationmessage-for="{{ addresscontext }}email"></span>
+        </div>
+    </div> 
+    <div class="mz-l-formfieldgroup-row ">
+        <div class="mz-l-formfieldgroup-cell text-right mz-column-billing-catalog mz-vertical-align">
+            <input type="checkbox" id="editingcontact-is-billing" data-mz-value="marketingEnabled" value="false" {% if model.marketingEnabled %} checked="checked" {% endif %}>
+        </div>
+        <div class="mz-l-formfieldgroup-cell mz-column-billing-catalog">
+            <label for="editingcontact-is-billing" class="chkbox_label catalog-request-marketlinglabel">{{ labels.marketingEnabledForCatalogRequest }}</label>
+        </div>
+    </div>     
+    <div class="mz-l-formfieldgroup-row ">
+        <div class="mz-l-formfieldgroup-cell mz-hide-column-catalog">
+        </div>
+        <div class="mz-l-formfieldgroup-cell">
+            <div class="mz-contact-actions">
+                <button class="button button-primary mz-contact-save" data-mz-action="finishEditContact">{{ labels.submit }}</button>
+            </div>      
+        </div>
+    </div>   	    
+
+   
+{% endblock address-form %}

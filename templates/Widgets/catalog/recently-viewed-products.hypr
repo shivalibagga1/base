@@ -1,0 +1,5 @@
+
+<div class="mz-recently-viewed-products mz-related-products" id= "recently-viewed-products"  data-mz-recently-viewed-products ="{% json_attribute Model.config%}">
+
+</div>
+{% require_script "widgets/recently-viewed-products" %}

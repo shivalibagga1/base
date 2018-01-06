@@ -1,0 +1,131 @@
+<div class="arrow-up"></div>
+{% if model.items.length>0 %}
+	<ul class="media-list">	
+			<div class="media heading-row">
+				<div class="media-left">
+					<h5 class="bold-text">item</h5>
+				</div>
+				<div class="media-body">
+					<div class="col-xs-6">															
+					</div>
+					<div class="col-xs-6 price-label">
+						<div class="row">
+							<div class="col-xs-6 price-each-col"><h5 class="bold-text">price each</h5></div>
+							<div class="col-xs-6 price-col"><h5 class="bold-text">price</h5></div>			
+						</div>
+					</div>
+				</div>
+			</div>
+
+		    {% for items in model.cartItems  %}
+		    	<div class="media">
+					<div class="media-left">
+						<a href="/p/{{items.product.productCode}}">							
+							{% with items.product|get_product_attribute("tenant~color") as colorAttr %}  
+							  {% if colorAttr %}
+							    {% with colorAttr.value|replace(" ","_") as colorValue %}
+							      {% with "/cms/files/{0}_{1}_v1.jpg"|string_format(items.product.productCode, colorValue) as fileName %}
+							            <img class="media-object" src="https:{% make_url "cdn" fileName with maxWidth=themeSettings.globalCartItemImageMaxWidth as_parameter %}" {% if items.product.imageAlternateText %}alt="{{ items.product.imageAlternateText }}"{% endif %} onerror="this.setAttribute('src','{% make_url "image" items.product with maxWidth=themeSettings.globalCartItemImageMaxWidth as_parameters %}')" />   
+							      {% endwith %}     
+							    {% endwith %}
+							  {% else %}
+							    {% if items.product.imageUrl %}
+							          <img class="media-object" src="{% make_url "image" items.product with maxWidth=themeSettings.globalCartItemImageMaxWidth as_parameters %}" {% if items.product.imageAlternateText %}alt="{{ items.product.imageAlternateText }}"{% endif %} />
+							    {% else %}
+							      <div class="media-object cart-noimage">
+									[{{ labels.noImages }}]
+								</div>
+							    {% endif %}    
+							  {% endif %}  
+							{% endwith %}						  
+						</a>
+					</div>
+					<div class="media-body">
+						<div class="col-xs-6">
+							<h5 class="media-heading">
+								<a href="/p/{{items.product.productCode}}">
+									{{ items.product.name }}									
+								</a>
+							</h5>
+							{% if items.product.options %}
+								{% for option in items.product.options %}
+								<div><b>{{ option.name }}</b>  <span>{% if option.stringname %}{{ option.stringname }}{% else %}{{ option.value }}{% endif %}</span></div>
+								{% endfor %}
+							{% endif %}	
+							<div><b>{{ labels.qty }} </b>  <span>{{ items.quantity }}</span></div>
+						</div>
+						<div class="col-xs-6">
+							<div class="row">
+								<div class="col-xs-5">
+								{% include "modules/common/item-price" with item=items %}
+								</div>
+								<div class="col-xs-7 price-amount-col">{% include "modules/common/item-total" with item=items isGlobalCart="true" %}</div>	
+							</div>
+						</div>
+					</div>
+				</div>
+		    {% endfor %}
+	</ul>
+	<div class="row total-amount-row">
+	    <div class="col-xs-12 text-right">
+	    	<b>Subtotal: </b>
+	    	<span>{{ model.subtotal|currency }}</span>
+	    </div>
+  	    {% if model.orderDiscounts %}
+	  	    {% for orderDiscount in model.orderDiscounts  %}
+	  	    <div class="col-xs-12 text-right text-primary">
+	  	    	<b>{{ orderDiscount.discount.name }}</b>
+		    	<span> - {{ orderDiscount.impact |currency }}</span>
+		    </div>
+	  	    {% endfor %}
+	    {% endif %}
+	    {% if model.items.length > themeSettings.globalCartMaxItemCount %}
+	    <div class="col-xs-6 text-left ">
+	    	<a href="/cart"> {{model.items.length-themeSettings.globalCartMaxItemCount}} more item(s)... </a>
+	    </div>
+	    {% endif%}
+	    <div class="{% if model.items.length > themeSettings.globalCartMaxItemCount %}col-xs-6{% else %}col-xs-12{% endif %} text-right">
+	    	<b>Total: </b>
+	    	<span>{{ model.total|currency }}</span>
+	    </div>	    
+	</div>
+	<div class="row">
+		<div class="col-xs-8">
+			<a href="/cart" class="btn btn-default">{{ labels.openCart }}</a>
+			{% if (themeSettings.globalCartEnableSaveCart && user.isAnonymous)  %}
+				<button data-mz-action="openLiteRegistration" class="btn btn-default">Save Cart</button>
+			{% endif %}
+		</div>
+		<div class="col-xs-4 text-right">
+			{% if not user.isAnonymous %}
+  				<form method="post" value="" action="{{ pageContext.secureHost }}/cart/checkout">
+  					<button type="submit" class="btn btn-default" >Checkout</button>
+  				</form>
+ 			{% else%}
+ 				<button type="submit" class="btn btn-default" data-mz-action="checkoutGuest">Checkout</button>
+			{% endif%}
+		</div>
+	</div>
+
+	{% if themeSettings.globalCartRelatedProducts %}
+		<h5>You may also like</h5>
+		<div class="related-products"></div>
+	{% endif %}
+	<div class="row text-center" style="padding-top: 15px;">
+		{% if themeSettings.globalCartEmptyBasketFooter %} 
+		  <a {% if themeSettings.globalCartEmptyBasketKickerLink %} href="{{ themeSettings.globalCartEmptyBasketKickerLink }}"{% else %} href="/home" {% endif %}>
+		  	<img src="{% make_url "image" themeSettings.globalCartEmptyBasketFooter.imageUrl with width=370 as_parameters %}"  />
+		  </a>
+		{% endif %}		
+	</div>
+
+{% else %}
+	<div class="text-center">
+		<div class=>Your shopping basket is empty</div>
+		{% if themeSettings.globalCartEmptyBasketFooter %} 
+		  <a {% if themeSettings.globalCartEmptyBasketKickerLink %} href="{{ themeSettings.globalCartEmptyBasketKickerLink }}"{% else %} href="/home" {% endif %}>
+		  	<img src="{% make_url "image" themeSettings.globalCartEmptyBasketFooter.imageUrl with width=370 as_parameters %}"  />
+		  </a>
+		{% endif %}		
+	</div>
+{% endif %}

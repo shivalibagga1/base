@@ -1,0 +1,9 @@
+{# Page View Toggle Block #}
+<div class="ml-grid-view-toggle-container btn-group">
+    <button data-btn-view-toggle type="button" id="gridView" class="active btn btn-default">
+       <span class="glyphicon glyphicon-th-large"></span>
+    </button>
+    <button data-btn-view-toggle type="button" id="listView" class="btn btn-default">
+      <span class="glyphicon glyphicon-th-list"></span>
+    </button>
+</div>

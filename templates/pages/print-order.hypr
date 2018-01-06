@@ -1,0 +1,24 @@
+{% extends "page" %}
+{% block page-header %}{% endblock page-header %}
+
+{% block site-nav %}{% endblock site-nav %}
+
+{% block body-tag-classes %}mz-printorder{% endblock body-tag-classes %}
+
+{% block body-content %}
+{% require_script "pages/print-order" %}
+{% block breadcrumbs %} {% endblock breadcrumbs %}
+<input type="hidden" id="companyname" value="{{ model.properties.companyName|safe }}" />
+<input type="hidden" id="companyaddr" value="{{ model.properties.companyAddress }}" /> 
+<input type="hidden" id="company-url" value="{{ model.properties.websiteUrl|safe }}" />
+<div id="print" class="print-order-details">
+ 	
+</div>
+ {% block page-footer %}{% endblock page-footer %}
+<style>
+    {% inline_style "print-order.less" %}
+</style>
+{% endblock body-content %}
+
+
+

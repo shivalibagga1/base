@@ -1,0 +1,34 @@
+{% extends "page" %}
+{% block main-container-class %}container{% endblock main-container-class %}
+
+{% block title-tag-content %}{% firstof pageContext.metaTitle model.name %}  - {% parent %}{% endblock title-tag-content %}
+
+{% block body-tag-classes %}{% endblock body-tag-classes %}
+
+{% block body-content %}
+{% block breadcrumbs %}{% endblock breadcrumbs %}
+{% with navigation.breadcrumbs|first as rootPage %}
+	<div class="row">
+		<div class="hidden-xs col-sm-3">
+		    <ul class="customer-navs" >
+                <li class="sub-customer-nav header" >
+                    <a class="sub-customer-nav-link " {% if link.openInNewWindow %}target='_blank'{% endif %} href="{{rootPage.url}}">{{ rootPage.name|safe }}</a>
+                </li>		    			
+	    		{% with navigation.tree|findwhere("originalId", rootPage.originalId) as tree %}
+	                {% for sublink in tree.items %} 
+	                    {% if not sublink.isHidden and not sublink.isEmpty and forloop.counter0 < 8 %}
+	                        <li class="sub-customer-nav child-nav{% if sublink.originalId == model.categoryId or sublink.originalId == model.id %} active{%endif%}" >
+	                            <a class="sub-customer-nav-link " {% if link.openInNewWindow %}target='_blank'{% endif %} href="{{sublink.url}}">{{ sublink.name|safe }}</a>
+	                        </li>
+	                    {% endif %}
+	                {% endfor %}	    		
+				{% endwith %}
+		    </ul>
+		</div>
+		<div class="col-xs-12 col-sm-9">
+			{% dropzone "customerService" scope="page" %}
+		</div>
+	</div>
+{% endwith %}
+
+{% endblock body-content %}

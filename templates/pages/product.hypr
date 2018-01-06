@@ -1,0 +1,15 @@
+{% extends "page" %}
+{% block title-tag-content %}{% firstof pageContext.metaTitle|replace("'","&rsquo;")|replace('"',"”")|safe model.content.productName|replace("'","&rsquo;")|replace('"',"”")|safe %}  - {% parent %}{% endblock title-tag-content %}
+{% block body-tag-classes %}mz-product{% endblock body-tag-classes %}
+{% block body-content %}
+{% preload_json model "product" %}
+<div class="product-wrapper">
+	{% block breadcrumbs %}
+		{% if themeSettings.showBreadcrumbs %}
+			{% include "modules/breadcrumbs" %}
+	    {% endif %}
+	{% endblock breadcrumbs %}    
+    <div class="clearfix"></div>
+    {% include "modules/product/product-details" %}
+</div>
+{% endblock body-content %}

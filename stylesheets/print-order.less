@@ -1,0 +1,113 @@
+﻿ @media print {   
+  #page-content{
+	  padding: 0 !important;
+  }
+    .shipping-address,
+    .billing-address{
+        width: 50% !important;
+        display: table-cell !important;
+    }
+    html, body { 
+      height: auto;
+    }
+    .mz-l-stack-section{
+      margin-bottom: 0px !important;
+    }
+    .mz-stack-order-confirmation{
+      margin-bottom: 0;
+    }
+    .site-root-nav,
+    .ml-global-footer,
+    .footer-icons,
+    .mz-checkout-qty-label-mobile,
+    .mz-print-hide,
+    footer, nav, .mz-pagefooter-copyright, 
+    .ml-header-search-wrapper, .ml-header-links-wrapper,
+    .ml-header-global-cart-wrapper, header{
+      display: none !important;
+    }
+    a[href]:after {
+        content: none !important;
+    }
+    #mz-shipping-section{
+      width: 50%;
+      float: left;
+    }
+    #mz-billing-section{
+      width: 50%; 
+      float: left;
+    }
+    .mz-header-basket-md-sm,
+    .mz-price-each-display,
+    .mz-item-discountname{
+      display: block !important;
+    }
+    .mz-order-content-container{
+      float: left;
+      width: 50%;
+      font-weight: 700!important;
+    }
+    .mz-propertylist dt,
+    strong,
+    .section-payment dt{
+      font-weight: 700!important;
+    }
+    .mz-item-price{
+      float: none !important;
+    }
+    #mz-print-content-confirmation{
+      display: none;
+    }
+    .mz-ordersummary-header-total,
+    .mz-ordersummary-header-each,
+    .mz-price-each-display,
+    .mz-checkout-item-total-container{
+      width: 24%;
+    }
+    .mz-ordersummary-header-total{
+      padding-right: 0px;
+    }
+    .mz-carttable-item{
+        .mz-price-each-display{
+            .mz-item-price{
+              text-align: left !important;
+            }
+        }
+        .mz-checkout-total-row{
+          padding-top: 0px;
+        } 
+        .mz-ordersummary-lineitems{
+          padding-bottom: 0px;
+        }
+    }
+    .mz-logo-confirmation-page{
+        display: block !important;
+    }
+    .mz-checkout-payment{
+        .mz-propertylist{
+            margin-bottom: 0px;
+        }
+    }
+    .mz-printorder{
+    .mz-ordersummary{
+      .mz-ordersummary-item-product{
+          float: none ;
+      }
+      .mz-price-main-container{
+        margin-left: 100px;
+      }
+    }
+    }
+    .company-logo{
+          width: 100%;
+          max-width: 339px;
+          margin: 20px 0;
+    }
+    body.mz-confirmation .printLogo{
+      display: block;
+    }       
+ }
+
+.print-order-details {
+  display: none;
+}

@@ -1,0 +1,53 @@
+﻿{% extends "page" %}
+
+{% block title-tag-content %}{% firstof pageContext.metaTitle labels.cart %} - {% parent %}{% endblock title-tag-content %}
+
+{% block head-tag-scripts %}
+{% parent %}
+{% if siteContext.checkoutSettings.visaCheckout.isEnabled and not pageContext.isEditMode %}
+{% include "modules/common/anti-clickjacking-script" %}
+{% endif %}
+{% endblock head-tag-scripts %}
+
+{% block body-tag-classes %} mz-cart {% endblock body-tag-classes %}
+
+{% block secondary-nav %}{% endblock secondary-nav %}
+
+{% block body-content %}
+
+{% require_script "pages/cart" %}
+
+{% preload_json model "cart" %}
+<div class="modal fade" id="mz-location-selector">
+	{% include "modules/cart/cart-location-select" %}
+</div>
+<div class="mz-l-container">
+	<h1 class="mz-pagetitle">{{ labels.cart }}</h1>
+	<!-- Check if model is not empty and form product table if not-->
+	{% if not model.isEmpty %}  
+			<form method="post" action="{{ siteContext.secureHost }}{{siteContext.siteSubdirectory}}/cart/checkout" id="cartform">
+				{% dropzone "cart-top" scope="template" %}
+				<input type="hidden" name="id" value="{{model.id}}" />
+		        {% include "modules/common/message-bar" with model=model.messages %}
+		        <div class="mz-table mz-table-cart" id="cart">
+		            {% include "modules/cart/cart-table" %}
+		        </div>
+			</form>
+	<!-- Show empty cart if model is empty -->
+	{% else %}
+			<div class="cart-div">Your bag is empty - continue shopping!</div>
+			<div class="cart-div">
+	            <a href="/" class="btn">
+	            	<div class="cart-btn-continue"> Continue Shopping</div>
+	            </a>
+	        </div>
+	{% endif %}
+	<!-- Widget code -->
+	<div class="row" style="padding-top: 10px;">
+		<div class="col-xs-12">
+			{% dropzone "cart-advert" scope="page" %}
+		</div>
+	</div>
+
+</div>
+{% endblock body-content %}

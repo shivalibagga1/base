@@ -1,0 +1,159 @@
+﻿<div class="mz-ordersummary col-xs-12 mz-reset-padding">
+        <div class="mz-header-basket-md-sm hidden-xs">
+                <div class="mz-ordersummary-header-product col-sm-6 mz-order-content-container">{{ labels.product }}</div>
+                <div class="mz-ordersummary-header-each col-sm-3 mz-order-content-container">{{ labels.price }}</div>
+                <div class="mz-ordersummary-header-total col-sm-3 text-right mz-order-content-container">{{ labels.total }}</div>
+        </div>
+        {% for item in model.items %}
+            <div class="mz-ordersummary-lineitems mz-carttable-item">
+              <div class="mz-ordersummary-line mz-ordersummary-line-item {% if item.discountTotal > 0 %}is-discounted{% endif %}">
+                    <div class="mz-ordersummary-item-product col-sm-6 col-xs-12 mz-order-content-container mz-reset-padding">
+                      <div class="pull-left mz-order-summary-image">
+                        {% with item.product|get_product_attribute("tenant~color") as colorAttr %}  
+                          {% if colorAttr %}
+                            {% with colorAttr.value|replace(" ","_") as colorValue %}
+                              {% with "/cms/files/{0}_{1}_v1.jpg"|string_format(item.product.productCode, colorValue) as fileName %}
+                                  {% include "modules/product/product-image" with productImage=fileName productAltText=item.product.imageAlternateText productMaxWidth=themeSettings.maxProductImageThumbnailSize productImageClass="mz-productimages-thumbimage" isThumb="true" as_parameter %}
+                              {% endwith %}     
+                            {% endwith %}
+                          {% else %}
+                            {% if item.product.imageUrl %}
+                                  <img class="mz-carttable-item-image" src="{% make_url "image" item.product with maxWidth=themeSettings.globalCartItemImageMaxWidth as_parameters %}" {% if item.product.imageAlternateText %}alt="{{ item.product.imageAlternateText }}"{% endif %} />
+                            {% else %}
+                                <span class="mz-carttable-item-image mz-product-image-placeholder pull-left">
+                                  <span class="mz-productlisting-imageplaceholdertext">{{ labels.productImagePlaceholder }}</span>
+                                </span>
+                            {% endif %}    
+                          {% endif %}  
+                        {% endwith %}                       
+                      </div>
+                      <div class="mz-carttable-item-info-wrap pull-left col-xs-8 mz-reset-padding-right">
+                        <div class="mz-carttable-item-title" >{{ item.product.name |safe }}</div>
+                         <div class="mz-carttable-item-code">
+                          {{ labels.item }}# <span>{{ item.product.productCode }}</span>
+                        </div>
+                        {% if item.product.options and themeSettings.showCartItemOptions %}
+                        <div class="mz-propertylist">
+                          {% for option in item.product.options %}
+                          <div>{% if option.name == "OTHER" %}
+                    OPTION
+                    {% else %}
+                    {{ option.name }}
+                    {% endif %}:
+                            <span class="text-capitalize">
+                              {% if option.stringValue %}
+                                    {% if option.stringValue == 'CHR(38)' %}
+                                    &amp;
+                                    {% else %}
+                                      {% if option.stringValue == 'CHR(64)' %}
+                                      @
+                                      {% else %}
+                                        {{ option.stringValue }}
+                                      {% endif %}
+                                    {% endif %}
+                              {% else %}
+                                    {{ option.shopperEnteredValue }}
+                              {% endif %}
+                            </span>
+                          </div>          
+                          {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="mz-propertylist ">
+                          <div>Qty:&nbsp;<span class="text-capitalize">{{ item.quantity }}</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="clearfix visible-xs mz-print-hide"></div>
+                    <div class="col-sm-3 col-sm-3 col-xs-6  hidden-xs mz-price-each-display mz-price-main-container">
+                        {% include "modules/common/item-price" %}
+                    </div>
+                    <div class="col-sm-3 col-xs-6 mz-checkout-item-total-container pull-right">
+                        {% include "modules/common/item-total" %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    <div class="clearfix visible-xs"></div>
+         <div class="col-sm-12 text-right mz-reset-padding">
+            <div class="mz-ordersummary-subtotal">
+              <div class="mz-checkout-total-row">
+                <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.subtotal }}:</span>
+                <span class="mz-ordersummary-totalvalue col-sm-4">{{ model.discountedSubtotal|currency }}</span>
+              </div>
+            </div>
+          {% for discount in model.orderDiscounts %}
+          {% if not discount.excluded %}
+          <div class="mz-ordersummary-discount">
+            <div class="mz-checkout-total-row mz-checkout-discount-row-container">
+              <span class="mz-ordersummary-discountname col-sm-4 text-right">{{ discount.discount.name }}:</span>
+              <span class="mz-ordersummary-discountamt col-sm-4">-{{ discount.impact|currency }}</span>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+          
+          {% if model.dutyTotal > 0 %}
+          <div class="mz-ordersummary-tax">
+            <div class="mz-checkout-total-row">
+              <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.taxDuty }}:</span>
+              <span class="mz-ordersummary-totalvalue col-sm-4">{% filter currency %} {{ model.dutyTotal|add(model.taxTotal)}} {% endfilter %}</span>
+            </div>
+          </div>
+          {% else %}
+          {% if model.taxTotal %}
+          <div class="mz-ordersummary-tax">
+              <div class="mz-checkout-total-row">
+                  <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.tax }}:</span>
+                  <span class="mz-ordersummary-totalvalue col-sm-4">{{ model.taxTotal|currency }}</span>
+              </div>
+          </div>
+          {% endif %}
+          {% endif %}
+
+          <div class="mz-ordersummary-shippingtotal">
+              <div class="mz-checkout-total-row">
+                <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.shippingHandling }}:</span>
+                <span class="mz-ordersummary-totalvalue col-sm-4">{{ model.shippingSubTotal|currency }}</span>
+              </div>
+            </div>
+            {% for shippingDiscount in model.shippingDiscounts %}
+            <div class="mz-ordersummary-shippingdiscount">
+              <div class="mz-checkout-total-row">
+                <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ shippingDiscount.discount.discount.name }}:</span>
+                <span class="mz-ordersummary-totalvalue col-sm-4">-{{ shippingDiscount.discount.impact|currency }}</span>
+              </div>
+            </div>
+            {% endfor %}
+            {% if model.handlingTotal %}
+            <div class="mz-ordersummary-additionalhandling">
+                <div class="mz-checkout-total-row">
+                  <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.additionalHandling }}{% if model.handlingAmount > model.handlingTotal  %}<span class="is-crossedout" {% block crossedout-inline-style %}{% endblock crossedout-inline-style %}> ( {{ model.handlingAmount|currency }} )</span>{% endif %}</span>
+                  <span class="mz-ordersummary-totalvalue col-sm-4">{{ model.handlingTotal|currency }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+          <div class="mz-ordersummary-grandtotal">
+                <div class="mz-checkout-total-row">
+                    <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.total }}:</span>
+                    <span class="mz-ordersummary-totalvalue col-sm-4">{{ model.total|currency }}</span>
+                </div>
+            </div>
+        {% if model.billingInfo and model.billingInfo.digitalCreditPaymentTotal %}
+          <div class="mz-ordersummary-digitalcreditpayment">
+            <div class="mz-checkout-total-row">
+              <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.digitalCreditTotal }}</span>
+              <span class="mz-ordersummary-totalvalue col-sm-4">{{ labels.digitalCreditSubtractFromOrderPrefix }}{{ model.billingInfo.digitalCreditPaymentTotal|currency }}{{ labels.digitalCreditSubtractFromOrderSuffix }}</span>
+            </div>
+          </div>
+          <div class="mz-ordersummary-grandtotal">
+                <div class="mz-checkout-total-row">
+                    <span class="mz-ordersummary-totalname col-sm-4 text-right">{{ labels.remainingBalance }}:</span>
+                    <span class="mz-ordersummary-totalvalue col-sm-4">{{ model.billingInfo.nonStoreCreditTotal|currency }}</span>
+                </div>
+            </div>
+       {% endif %}
+        </div>
+    </div>
